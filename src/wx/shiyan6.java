@@ -16,7 +16,6 @@ public class shiyan6 {
 			Scanner s = new Scanner(System.in);
 			String str = null;
 			str = s.nextLine();
-			int posth1 = str.indexOf("!");
 			a = str.charAt(0);
 			if (a == '!') {
 				int pos1 = str.indexOf("!simplify");
@@ -32,7 +31,10 @@ public class shiyan6 {
 				express = str;
 				expression(express);
 			}
+			
 		}
+		
+		
 	}
 
 	/**
@@ -46,9 +48,9 @@ public class shiyan6 {
 		String sim3 = "+*";
 		char num1 = 0;
 		char num2 = 0;
-		int Len1 = express.length();
+		int len1 = express.length(); // NOPMD by lostork on 16-10-13 下午10:57
 		int x = 0;
-		for (int i = 0; i < Len1; i++) {
+		for (int i = 0; i < len1; i++) {
 			num1 = express.charAt(i);
 			int position = sim1.indexOf(num1);
 			if (position == -1) {
@@ -56,7 +58,7 @@ public class shiyan6 {
 				break;
 			}
 		}
-		for (int i = 0; i < Len1 - 1; i++) {
+		for (int i = 0; i < len1 - 1; i++) {
 			num1 = express.charAt(i);
 			num2 = express.charAt(i + 1);
 			int position1 = sim2.indexOf(num1);
@@ -66,7 +68,7 @@ public class shiyan6 {
 				break;
 			}
 		}
-		for (int i = 0; i < Len1 - 1; i++) {
+		for (int i = 0; i < len1 - 1; i++) {
 			num1 = express.charAt(i);
 			num2 = express.charAt(i + 1);
 			int position1 = sim3.indexOf(num1);
@@ -95,9 +97,9 @@ public class shiyan6 {
 		int j = 13;
 		String str3 = " ";
 		int len = str.length();
-		char[] Arr = str.toCharArray();
+		char[] arr = str.toCharArray(); // NOPMD by lostork on 16-10-13 下午10:59
 		while (j < len - 1) { // �ж������Ƿ�Ϸ�
-			String str2 = String.valueOf(Arr[j]);
+			String str2 = String.valueOf(arr[j]);
 			int b = str3.indexOf(str2);
 			if (b == 0) {
 				j = j + 4;
@@ -115,25 +117,25 @@ public class shiyan6 {
 			int len1 = simplifyNew.length();// �������ֵʽ���鳤��
 			int len2 = express.length();// ���ʽ���鳤��
 			simplifyNew = simplifyNew.substring(9, len1);
-			char[] Arr1 = simplifyNew.toCharArray(); // �������ֵʽ����
-			char[] Arr2 = express.toCharArray(); // ���ʽ����
+			char[] arr1 = simplifyNew.toCharArray(); // �������ֵʽ���� // NOPMD by lostork on 16-10-13 下午10:58
+			char[] arr2 = express.toCharArray(); // ���ʽ���� // NOPMD by lostork on 16-10-13 下午10:37
 			int i = 0;
 			int l = 0;
-			if (Arr1 == null) { // �������Ϊ!simplify,���������ʽ
+			if (arr1 == null) { // �������Ϊ!simplify,���������ʽ
 				System.out.println(express);
 			} else {
 				while (l < len1 - 10) { // �Ա���������֬���滻
 
 					for (i = 0; i < len2; i++) {
 						String str4 = 
-								String.valueOf(Arr1[l]);
+								String.valueOf(arr1[l]);
 						String str1 = 
-								String.valueOf(Arr2[i]);
+								String.valueOf(arr2[i]);
 
 						int a = str4.indexOf(str1);
 						if (a == 0) {
 							String expressNew = 
-									express.replace(Arr1[l], Arr1[l + 2]);
+									express.replace(arr1[l], arr1[l + 2]);
 							express = expressNew;
 						}
 					}
@@ -180,7 +182,7 @@ public class shiyan6 {
 					for (int x = 0; x < ad; x++) {
 						a1[0] = a1[0] + "*" + num1;
 					}
-					StringBuffer sb = new StringBuffer();
+					final StringBuffer sb = new StringBuffer();
 					for (int i = 0; i < a1.length; i++) {
 						sb.append(a1[i]);
 					}
