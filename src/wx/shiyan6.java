@@ -9,32 +9,37 @@ import java.util.Scanner;
  */
 public class shiyan6 {
 	public static void main(String[] args) {
-		char a;
-		String express = null;
-		int posth = 0;
-		while (posth == 0) {
-			Scanner s = new Scanner(System.in);
-			String str = null;
-			str = s.nextLine();
-			a = str.charAt(0);
-			if (a == '!') {
-				int pos1 = str.indexOf("!simplify");
-				if (pos1 == 0) {
-					simplify(str, express);
-				}
-				int pos2 = str.indexOf("!d/d");
-				if (pos2 == 0) {
-					derivative(str, express);
-				}
-			}
-			if (a != '!') {
-				express = str;
-				expression(express);
+		char firstCharacter;
+		String expression = null;
+		final String END_COM = new String("###");//add End Command, infinite loop before...
+		Scanner s = new Scanner(System.in);
+		while (true) {
+			String line = null;
+			line = s.nextLine();// input line
+			
+			if (line.equals(END_COM)) {
+				break;
 			}
 			
+			firstCharacter = line.charAt(0);// first char
+			if (firstCharacter == '!') {
+				int posOfSimplifyCom = line.indexOf("!simplify");
+				if (posOfSimplifyCom == 0) {
+					simplify(line, expression);
+				}
+				
+				int posOfDerivateCom = line.indexOf("!d/d");
+				if (posOfDerivateCom == 0) {
+					derivative(line, expression);
+				}
+			}
+			
+			if (firstCharacter != '!') {
+				expression = line;
+				expression(expression);
+			}
 		}
-		
-		
+		s.close();
 	}
 
 	/**
