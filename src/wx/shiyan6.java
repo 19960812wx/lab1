@@ -8,6 +8,10 @@ import java.util.Scanner;
  *
  */
 public class shiyan6 {
+	/**
+	 * control the whole program.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		char firstCharacter;
 		String expression = null;
@@ -43,54 +47,61 @@ public class shiyan6 {
 	}
 
 	/**
-	 *
-	 * @param express
+	 * check whether the parameter expression is valid.
+	 * if so, print the expression.
+	 * else, print error info.
+	 * @param expression
 	 */
-	public static void expression(final String express) {
-		String sim1 = 
-				"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQQRST+*";
-		String sim2 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQQRST";
-		String sim3 = "+*";
-		char num1 = 0;
-		char num2 = 0;
-		int len1 = express.length(); // NOPMD by lostork on 16-10-13 下午10:57
+	public static void expression(final String expression) {
+		
+		//contains all valid characters in expression, if one character in expression
+		//not exist in allCharSet, the expression is invalid.
+		String allCharSet = 
+				"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+*";
+		
+		//contains all valid variable characters.
+		String varCharSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		
+		//contains all valid operator characters.
+		String optrCharSet = "+*";
+		
+		char iterChar = 0;
+		char nextIterChar = 0;
+		int expLen = expression.length(); // NOPMD by lostork on 16-10-13 下午10:57 
 		int x = 0;
-		for (int i = 0; i < len1; i++) {
-			num1 = express.charAt(i);
-			int position = sim1.indexOf(num1);
-			if (position == -1) {
-				x = x + 1;
-				break;
+		
+		//check whether all characters in expression are valid.
+		for (int i = 0; i < expLen; i++) {
+			iterChar = expression.charAt(i);
+			if (allCharSet.indexOf(iterChar) == -1) {
+				System.out.println("Error! Expression has invalid character!");
+				return;
 			}
 		}
-		for (int i = 0; i < len1 - 1; i++) {
-			num1 = express.charAt(i);
-			num2 = express.charAt(i + 1);
-			int position1 = sim2.indexOf(num1);
-			int position2 = sim2.indexOf(num2);
-			if (position1 > 0 & position2 > 0) {
-				x = x + 1;
-				break;
+		
+		for (int i = 0; i < expLen - 1; i++) {
+			iterChar = expression.charAt(i);
+			nextIterChar = expression.charAt(i + 1);
+			
+			// check whether all variable is a single char, 
+			// the program doesn't support variables like "foo","bar".
+			if (varCharSet.indexOf(iterChar) > 0 
+					& varCharSet.indexOf(nextIterChar) > 0) {
+				System.out.println("Error! Expression has invalid variables "
+						+ "(only support one-character variables)!");
+				return;
 			}
-		}
-		for (int i = 0; i < len1 - 1; i++) {
-			num1 = express.charAt(i);
-			num2 = express.charAt(i + 1);
-			int position1 = sim3.indexOf(num1);
-			int position2 = sim3.indexOf(num2);
-			if (position1 > 0 & position2 > 0) {
-				x = x + 1;
-				break;
+			
+			//check whether expression has two concatenated operator such as "++","*+"
+			if (optrCharSet.indexOf(iterChar) > 0 
+					& optrCharSet.indexOf(nextIterChar) > 0) {
+				System.out.println("Error! Expression has invalid operators.");
+				return;
 			}
+			
 		}
-		if (x > 0) {
-			System.out.println("Error,no variable");
-		} else {
-			System.out.printf("%s", express);
-			return;
-
-		}
-
+		
+			System.out.printf("%s", expression);
 	}
 /**
  * 
