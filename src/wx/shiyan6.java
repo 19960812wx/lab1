@@ -247,8 +247,8 @@ public class shiyan6 {
 			
 			//remove the first item from the expression.
 			expression = expression.substring(plusOptrPos + 1, expressionLen);
-			int position3 = processingItem.indexOf(derivativeVar);
-			if (position3 >= 0) {
+			int derVarPosInProItem2 = processingItem.indexOf(derivativeVar);
+			if (derVarPosInProItem2 >= 0) {
 //				;
 				int processingItemLen = processingItem.length();
 				int derVarCount = 0;
