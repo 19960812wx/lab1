@@ -67,7 +67,7 @@ public class shiyan6 {
 		
 		char iterChar = 0;
 		char nextIterChar = 0;
-		int expLen = expression.length(); // NOPMD by lostork on 16-10-13 下午10:57 
+		int expLen = expression.length(); 
 		int x = 0;
 		
 		//check whether all characters in expression are valid.
@@ -103,22 +103,29 @@ public class shiyan6 {
 		
 			System.out.printf("%s", expression);
 	}
+	
 /**
- * 
- * @param str
- * @param express
+ * Simplify the expression.
+ * @param line
+ * @param expression
  */
-	public static void simplify(String str, String express) {
+	public static void simplify(String line, String expression) {
 		String st = null;
-		int j = 13;
-		String str3 = " ";
-		int len = str.length();
-		char[] arr = str.toCharArray(); // NOPMD by lostork on 16-10-13 下午10:59
-		while (j < len - 1) { // �ж������Ƿ�Ϸ�
-			String str2 = String.valueOf(arr[j]);
-			int b = str3.indexOf(str2);
+		int j = 13;//the index of the space after the first parameter,like the # position:"!simplify x=4#y=3"
+		String space = " ";
+		
+		int lineLen = line.length();
+		char[] lineCharArray = line.toCharArray(); 
+		
+		//check whether parameter format is valid ,for example "x=8 y=9 u=2"
+		// program doesn't support other parameter format, like "x = 9 y = 5".
+		while (j < lineLen - 1) { // �ж������Ƿ�Ϸ�?
+			
+			
+			String str2 = String.valueOf(lineCharArray[j]);
+			int b = space.indexOf(str2);
 			if (b == 0) {
-				j = j + 4;
+				j = j + 4;//move to next space after parameter.
 
 			} else {
 				System.out.println("Error,no variable");
@@ -128,85 +135,160 @@ public class shiyan6 {
 				break;
 			}
 		}
+		
+		
 		if (st == null) {
-			String simplifyNew = str.replaceAll(" ", "");
-			int len1 = simplifyNew.length();// �������ֵʽ���鳤��
-			int len2 = express.length();// ���ʽ���鳤��
-			simplifyNew = simplifyNew.substring(9, len1);
-			char[] arr1 = simplifyNew.toCharArray(); // �������ֵʽ���� // NOPMD by lostork on 16-10-13 下午10:58
-			char[] arr2 = express.toCharArray(); // ���ʽ���� // NOPMD by lostork on 16-10-13 下午10:37
+			String simplifyNew = line.replaceAll(" ", "");
+			int simplifyNewLen = simplifyNew.length();// �������ֵʽ���鳤��?
+			int expressionLen = expression.length();// ���ʽ���鳤��?
+			
+			//simplifyNew now is like "x=3y=4" pattern;
+			simplifyNew = simplifyNew.substring(9, simplifyNewLen);
+			char[] simplifyNewCharArray = simplifyNew.toCharArray(); // �������ֵʽ����? 
+			char[] expressionCharArray  = expression.toCharArray(); // ���ʽ����? 
+			
 			int i = 0;
 			int l = 0;
-			if (arr1 == null) { // �������Ϊ!simplify,���������ʽ
-				System.out.println(express);
+			
+			
+			if (simplifyNewCharArray == null) { // ��������?!simplify,����������?//if no parameters
+				System.out.println(expression);
 			} else {
-				while (l < len1 - 10) { // �Ա���������֬���滻
+				while (l < simplifyNewLen - 10) { // �Ա���������֬���滻
 
-					for (i = 0; i < len2; i++) {
+					for (i = 0; i < expressionLen; i++) {
 						String str4 = 
-								String.valueOf(arr1[l]);
+								String.valueOf(simplifyNewCharArray[l]);
 						String str1 = 
-								String.valueOf(arr2[i]);
+								String.valueOf(expressionCharArray[i]);
 
 						int a = str4.indexOf(str1);
 						if (a == 0) {
 							String expressNew = 
-									express.replace(arr1[l], arr1[l + 2]);
-							express = expressNew;
+									expression.replace(simplifyNewCharArray[l], simplifyNewCharArray[l + 2]);
+							expression = expressNew;
 						}
 					}
-					l = l + 3;
+					l = l + 3;//change index l to next parameter.
 				}
-				System.out.println(express); // ����滻��ֵ��Ķ���ʽ
+				System.out.println(expression); // ����滻��ֵ��Ķ���ʽ
 			}
 		}
 
 	}
 
-	/**derivative.
-	 * derivative
-	 * @param str
-	 * @param express
+	/**
+	 * only support "!d/dx",there can't be spaces between "x" and "d".
+	 * @param line
+	 * @param expression
 	 */
-	public static void derivative(final String str, String express) {
-		char num1;
-		num1 = str.charAt(4);
-		int position1 = express.indexOf(num1);
-		if (position1 == -1) {
+	public static void derivative(final String line, String expression) {
+		char derivativeVar;
+		derivativeVar = line.charAt(4);//only support one-character derivative variable.
+		int derVarPos = expression.indexOf(derivativeVar);
+		if (derVarPos == -1) {
 			System.out.println("Error,no variable");
 		}
-		if (position1 >= 0) {
-			int position2 = express.indexOf("+");
-			String str5 = null;
-			String str1;
-			while (position2 >= 0) {
-				int a = express.length();
-				str1 = express.substring(0, position2);
-				express = express.substring(position2 + 1, a);
-				int position3 = str1.indexOf(num1);
-				if (position3 >= 0) {
-//					;
-					int num3 = str1.length();
-					int ad = 0;
-					for (int j = 0; j < num3; j++) {
-						if (num1 == str1.charAt(j)) {
-							ad = ad + 1;
+		if (derVarPos >= 0) {
+			int plusOptrPos = expression.indexOf("+");
+			String derivativeExpression = new String();
+			String processingItem;
+			while (plusOptrPos >= 0) {
+				int expressionLen = expression.length();
+				processingItem = expression.substring(0, plusOptrPos);
+				
+				//remove the first item from the expression.
+				expression = expression.substring(plusOptrPos + 1, expressionLen);
+				int derVarPosInProItem = processingItem.indexOf(derivativeVar);
+				if (derVarPosInProItem >= 0) {
+					int processingItemLen = processingItem.length();
+					int derVarCount = 0;
+					for (int j = 0; j < processingItemLen; j++) {
+						if (derivativeVar == processingItem.charAt(j)) {
+							derVarCount = derVarCount + 1;
 						}
 					}
-					String[] a1 = str1.split("%c", num1);
-					a1[0] = a1[0] + "*" + ad;
-					for (int x = 0; x < ad; x++) {
-						a1[0] = a1[0] + "*" + num1;
+					
+					//line commented below may be wrong
+					//String[] a1 = processingItem.split("%c", derivativeVar);
+					
+					String[] a1 = processingItem.split(String.valueOf(derivativeVar));
+					String s;
+					
+					
+					if (a1.length != 0) {
+						a1[0] = a1[0] + "*" + derVarCount;
+						
+						//add the derVar removed by the String.split method, but one less because 
+						//the derivative operation.
+						for (int x = 0; x < derVarCount - 1; x++) {
+							a1[0] = a1[0] + "*" + derivativeVar;
+						}
+						final StringBuffer sb = new StringBuffer();
+						for (int i = 0; i < a1.length; i++) {
+							sb.append(a1[i]);
+						}
+						s = sb.toString();
+					} else {
+						s = "1";
+					}
+					derivativeExpression = derivativeExpression + s + "+";
+					plusOptrPos = expression.indexOf("+");
+				} else {
+					derivativeExpression += processingItem + "+";
+				}
+				
+			}
+			
+			
+			//process the last item.
+			int expressionLen = expression.length();
+			processingItem = expression;
+			
+			//remove the first item from the expression.
+			expression = expression.substring(plusOptrPos + 1, expressionLen);
+			int position3 = processingItem.indexOf(derivativeVar);
+			if (position3 >= 0) {
+//				;
+				int processingItemLen = processingItem.length();
+				int derVarCount = 0;
+				for (int j = 0; j < processingItemLen; j++) {
+					if (derivativeVar == processingItem.charAt(j)) {
+						derVarCount = derVarCount + 1;
+					}
+				}
+				
+				//line commented below maybe wrong
+				//String[] a1 = processingItem.split("%c", derivativeVar);
+				
+				String[] a1 = processingItem.split(String.valueOf(derivativeVar));
+				String s;
+				
+				
+				if (a1.length != 0) {
+					a1[0] = a1[0] + "*" + derVarCount;
+					//add the derVar removed by the String.split method, but one less because 
+					//the derivative operation.
+					for (int x = 0; x < derVarCount - 1; x++) {
+						a1[0] = a1[0] + "*" + derivativeVar;
 					}
 					final StringBuffer sb = new StringBuffer();
 					for (int i = 0; i < a1.length; i++) {
 						sb.append(a1[i]);
 					}
-					String s = sb.toString();
-					str5 = str5 + s;
+					s = sb.toString();
+				} else {
+					s = "1";
 				}
-				System.out.printf("%s", str5);
+				derivativeExpression = derivativeExpression + s;
+				plusOptrPos = expression.indexOf("+");
+			} else {
+				derivativeExpression += processingItem;
 			}
+		
+			
+			
+			System.out.println(derivativeExpression);
 		}
 	}
 
