@@ -97,7 +97,7 @@ public final class shiyan6 {
 			// check whether all variable is a single char, 
 			// the program doesn't support variables like "foo","bar".
 			if (varCharSet.indexOf(iterChar) > 0 
-					& varCharSet.indexOf(nextIterChar) > 0) {
+					&& varCharSet.indexOf(nextIterChar) > 0) {
 				System.out.println("Error! Expression has invalid variables "
 						+ "(only support one-character variables)!");
 				return;
@@ -105,7 +105,7 @@ public final class shiyan6 {
 			
 			//check whether expression has two concatenated operator such as "++","*+"
 			if (optrCharSet.indexOf(iterChar) > 0 
-					& optrCharSet.indexOf(nextIterChar) > 0) {
+					&& optrCharSet.indexOf(nextIterChar) > 0) {
 				System.out.println("Error! Expression has invalid operators.");
 				return;
 			}
