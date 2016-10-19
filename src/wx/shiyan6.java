@@ -202,7 +202,7 @@ public final class shiyan6 {
 			System.out.println("Error,no variable");
 		}
 		if (derVarPos >= 0) {
-			int plusOptrPos = expression.indexOf('x');
+			int plusOptrPos = expression.indexOf('+');
 			String derivativeExp = new String();
 			String processingItem;
 			while (plusOptrPos >= 0) {
