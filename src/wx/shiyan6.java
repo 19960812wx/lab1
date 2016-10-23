@@ -12,7 +12,12 @@ public final class shiyan6 {
 	private final static String varCharSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
 	//contains all valid operator characters.
 	private final static String optrCharSet = "+*";
-	private final static String allCharSet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+*";
+	
+	//contains all valid characters in expression, if one character in expression
+	//not exist in allCharSet, the expression is invalid.
+	private final static String allCharSet = 
+	"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+*";
+	
 	private final static String space = " ";
 	private shiyan6(){
 	}
@@ -21,7 +26,7 @@ public final class shiyan6 {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		char firstCharacter;
+		char firstChar;
 		String expression = null;
 		final String END_COM = new String("###"); //add End Command, infinite loop before...
 		Scanner s = new Scanner(System.in);
@@ -31,8 +36,8 @@ public final class shiyan6 {
 			if (line.equals(END_COM)) {
 				break;
 			}
-			firstCharacter = line.charAt(0); // first char
-			if (firstCharacter == '!') {
+			firstChar = line.charAt(0);// first char
+			if (firstChar == '!') {
 				final int posOfSimplifyCom = line.indexOf("!simplify");
 				if (posOfSimplifyCom == 0) {
 					simplify(line, expression);
@@ -43,7 +48,8 @@ public final class shiyan6 {
 					derivative(line, expression);
 				}
 			}
-			if (firstCharacter != '!') {
+
+			if (firstChar != '!') {
 				expression = line;
 				expression(expression);
 			}
@@ -58,8 +64,6 @@ public final class shiyan6 {
 	 * @param expression
 	 */
 	public static void expression(final String expression) {
-		//contains all valid characters in expression, if one character in expression
-		//not exist in allCharSet, the expression is invalid.
 		char iterChar;
 		int expLen = expression.length();
 		//check whether all characters in expression are valid.
@@ -70,6 +74,7 @@ public final class shiyan6 {
 				return;
 			}
 		}
+		
 		char nextIterChar;
 		for (int i = 0; i < expLen - 1; i++) {
 			iterChar = expression.charAt(i);
@@ -105,12 +110,11 @@ public final class shiyan6 {
 		final char[] lineCharArray = line.toCharArray();
 		// check whether parameter format is valid ,for example "x=8 y=9 u=2"
 		// program doesn't support other parameter format, like "x = 9 y = 5".
-		while (j < lineLen - 1) { // �ж������Ƿ�Ϸ�??
+		while (j < lineLen - 1) { // �ж������Ƿ�Ϸ�?
 			final String str2 = String.valueOf(lineCharArray[j]);
 			final int b = space.indexOf(str2);
 			if (b == 0) {
-				j = j + 4; //move to next space after parameter.
-
+				j = j + 4;//move to next space after parameter.
 			} else {
 				System.out.println("Error,no variable");
 				// ���Ϸ����Error,no
@@ -119,6 +123,7 @@ public final class shiyan6 {
 				break;
 			}
 		}
+
 		if (stringFlag == null) {
 			String simplifyNew = line.replaceAll(" ", "");
 			final int simplifyNewLen = simplifyNew.length(); // �������ֵʽ���鳤��??
@@ -129,6 +134,7 @@ public final class shiyan6 {
 			final char[] expCharArray  = expression.toCharArray(); // ���ʽ����??
 			int i;
 			int l = 0;
+
 			if (simCharArray == null) { // ��������?!simplify,����������?//if no parameters
 				System.out.println(expression);
 			} else {
@@ -168,11 +174,20 @@ public final class shiyan6 {
 			int plusOptrPos = expression.indexOf('+');
 			String derivativeExp = new String();
 			String processingItem;
-			while (plusOptrPos >= 0) {
+			while (plusOptrPos >= 0 || !expression.isEmpty()) {
 				final int expressionLen = expression.length();
-				processingItem = expression.substring(0, plusOptrPos);
+
+				
+				if (plusOptrPos >= 0) {
+					processingItem = expression.substring(0, plusOptrPos);
+					expression = expression.substring(plusOptrPos + 1, expressionLen);
+				} else {
+					processingItem = expression;
+					expression = "";
+				}
+					
+
 				//remove the first item from the expression.
-				expression = expression.substring(plusOptrPos + 1, expressionLen);
 				final int derVarPosInItem = processingItem.indexOf(derivativeVar);
 				if (derVarPosInItem >= 0) {
 					final int processingItemLen = processingItem.length();
@@ -186,6 +201,7 @@ public final class shiyan6 {
 					//String[] a1 = processingItem.split("%c", derivativeVar);
 					String[] proItemSplited = processingItem.split(String.valueOf(derivativeVar));
 					String s;
+
 					if (proItemSplited.length == 0) {
 						s = "1";
 					} else {
@@ -201,50 +217,24 @@ public final class shiyan6 {
 						}
 						s = sb.toString();
 					}
-					derivativeExp = derivativeExp + s + "+";
-					plusOptrPos=expression.indexOf('+');
+
+					if (plusOptrPos >= 0) {
+						derivativeExp = derivativeExp + s + "+";
+					} else {
+						derivativeExp = derivativeExp + s;
+					}
+					plusOptrPos = expression.indexOf('+'); // NOPMD by lostork on 16-10-15 下午10:28
+
 				} else {
-					derivativeExp += processingItem + "+";
+					
+					if (plusOptrPos >= 0) {
+						derivativeExp += processingItem + "+";
+					} else {
+						derivativeExp += processingItem;
+					}
 				}
 			}
-			//process the last item.
-			int expressionLen = expression.length();
-			processingItem = expression;
-			//remove the first item from the expression.
-			expression = expression.substring(plusOptrPos + 1, expressionLen);
-			final int derVarPosInItem2 = processingItem.indexOf(derivativeVar);
-			if (derVarPosInItem2 >= 0) {
-				final int processingItemLen = processingItem.length();
-				int derVarCount = 0;
-				for (int j = 0; j < processingItemLen; j++) {
-					if (derivativeVar == processingItem.charAt(j)) {
-						derVarCount = derVarCount + 1;
-					}
-				}
-				//line commented below maybe wrong
-				//String[] a1 = processingItem.split("%c", derivativeVar);
-				String[] proItemSplited = processingItem.split(String.valueOf(derivativeVar));
-				String s;
-				if (proItemSplited.length == 0) {
-					s = "1";
-				} else {
-					proItemSplited[0] = proItemSplited[0] + "*" + derVarCount;
-					//add the derVar removed by the String.split method, but one less because 
-					//the derivative operation.
-					for (int x = 0; x < derVarCount - 1; x++) {
-						proItemSplited[0] = proItemSplited[0] + "*" + derivativeVar;
-					}
-					final StringBuffer stringBuffer = new StringBuffer();
-					for (int i = 0; i < proItemSplited.length; i++) {
-						stringBuffer.append(proItemSplited[i]);
-					}
-					s = stringBuffer.toString();
-				}
-				derivativeExp = derivativeExp + s;
-				plusOptrPos = expression.indexOf('+');
-			} else {
-				derivativeExp += processingItem;
-			}
+
 			System.out.println(derivativeExp);
 		}
 	}
