@@ -1,176 +1,256 @@
 package wx;
 
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class shiyan6 {
-	private static String str;
+/**
+ *
+ * @author lostork
+ *
+ */
+public final class shiyan6 {
+	// contains all valid variable characters.
+	private final static String varCharSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	// contains all valid operator characters.
+	private final static String optrCharSet = "+*";
+
+	// contains all valid characters in expression, if one character in
+	// expression
+	// not exist in allCharSet, the expression is invalid.
+	private final static String allCharSet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+*";
+
+	private final static String space = " ";
+
+	private shiyan6() {
+
+	}
+
+	/**
+	 * main method, program entrance.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		    char a;
-		    String express = null;
-		    String express1 = null;
-		    int posth = 0;
-		    while(posth == 0){
-	        Scanner s = new Scanner(System.in);
-	        String str = null;
-	        str = s.nextLine();
-			int posth1 = str.indexOf("!");
-			a = str.charAt(0);
-			if( a == '!'){
-				int pos1 = str.indexOf("!simplify");
-				if(pos1 == 0){
-					simplify(str,express);
+		char firstChar;
+		String expression = null;
+		final String END_COM = new String("###"); // add End Command, infinite
+													// loop before...
+		Scanner s = new Scanner(System.in);
+		while (true) {
+			String line;
+			line = s.nextLine(); // input line
+			if (line.equals(END_COM)) {
+				break;
+			}
+
+			firstChar = line.charAt(0);// first char
+			if (firstChar == '!') {
+				final int posOfSimplifyCom = line.indexOf("!simplify");
+				if (posOfSimplifyCom == 0) {
+					simplify(line, expression);
 				}
-				int pos2 = str.indexOf("!d/d");
-				if(pos2 == 0){
-					derivative(str,express);
+
+				final int posOfDerivateCom = line.indexOf("!d/d");
+				if (posOfDerivateCom == 0) {
+					derivative(line, expression);
 				}
 			}
-			if(a != '!'){
-				express = str;
-				expression(express);
+
+			if (firstChar != '!') {
+				expression = line;
+				expression(expression);
 			}
-		    }
+		}
+		s.close();
 	}
-	public static  void expression(String express) {
-		int num[]={0,1,2,3,4,5,6,7,8,9};
-		String sim1 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQQRST+*";
-		String sim2 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQQRST";
-		String sim3 = "+*";
-		char num1 = 0;
-		char num2 = 0;
-		int Len1 = express.length();
-		int x = 0;
-		for(int i = 0;i < Len1;i ++){
-			num1 = express.charAt(i);
-			int position = sim1.indexOf(num1);
-			if( position == -1){
-				x = x+1;
-				break;
+
+	/**
+	 * check whether the parameter expression is valid. if so, print the
+	 * expression. else, print error info.
+	 * 
+	 * @param expression
+	 */
+	public static void expression(final String expression) {
+		char iterChar;
+		int expLen = expression.length();
+		// check whether all characters in expression are valid.
+		for (int i = 0; i < expLen; i++) {
+			iterChar = expression.charAt(i);
+			if (allCharSet.indexOf(iterChar) == -1) {
+				System.out.println("Error! Expression has invalid character!");
+				return;
 			}
-		}
-		for(int i = 0;i < Len1-1;i ++){
-			num1 = express.charAt(i);
-			num2 = express.charAt(i+1);
-			int position1 = sim2.indexOf(num1);
-			int position2 = sim2.indexOf(num2);
-			if(position1 > 0 & position2 >0){
-				x = x+1;
-				break;
-			}
-		}
-		for(int i = 0;i < Len1-1;i ++){
-			num1 = express.charAt(i);
-			num2 = express.charAt(i+1);
-			int position1 = sim3.indexOf(num1);
-			int position2 = sim3.indexOf(num2);
-			if(position1 > 0 & position2 >0){
-				x = x+1;
-				break;
-			}
-		}
-		if(x > 0){
-			System.out.println("Error,no variable");
-		}
-		else{
-			System.out.printf("%s",express);
-			return ;
-			
-		}
-	
-	}
-	public static void simplify(String str,String express){
-		String st = null;
-		int j = 13;
-		String str3 = " ";
-		int len = str.length();
-		char []Arr = str.toCharArray();
-		while(j<len-1){             //ÅÐ¶ÏÊäÈëÊÇ·ñºÏ·¨
-			String str2 = String.valueOf(Arr[j]);
-			int b = str3.indexOf(str2);
-			if(b == 0){
-				j = j + 4;
-				
-			}
-			else{
-				System.out.println("Error,no variable");  //²»ºÏ·¨Êä³öError,no variable
-				st = "Error";
-				break;
-			}
-		}
-		if(st == null){
-			String simplifyNew = str.replaceAll(" ","");
-			int len1 = simplifyNew.length();//ÊäÈëµÄÇóÖµÊ½Êý×é³¤¶È
-			int len2 = express.length();//±í´ïÊ½Êý×é³¤¶È
-			simplifyNew = simplifyNew.substring(9,len1);
-			char [] Arr1 = simplifyNew.toCharArray();  //ÊäÈëµÄÇóÖµÊ½Êý×é
-			char [] Arr2 = express.toCharArray();   //±í´ïÊ½Êý×é
-			int i = 0;
-			int l = 0;
-			if(Arr1 == null){                   //Èç¹ûÊäÈëÎª!simplify,ÔòÊä³ö¶àÏîÊ½
-				System.out.println(express);
-			}
-			else{
-				while(l<len1-10){             //¶Ô±äÁ¿½øÐÐÊ÷Ö¬µÄÌæ»»
-					
-					for(i = 0;i < len2;i++){
-						String str4 = String.valueOf(Arr1[l]);
-						String str1 = String.valueOf(Arr2[i]);
-						
-						int a = str4.indexOf(str1);
-						if(a == 0){
-							String expressNew = express.replace(Arr1[l],Arr1[l+2]);
-							express = expressNew;
-						}
-					}
-					l = l + 3;
-				}
-				System.out.println(express);       //Êä³öÌæ»»ÊýÖµºóµÄ¶àÏîÊ½
-			}		
 		}
 
-		
-	
-    }
-	public static void derivative(String str,String express){
-		char num1;
-		num1 = str.charAt(4);
-		int position1 = express.indexOf(num1);
-		if(position1 == -1){
-			System.out.println("Error,no variable");
+		char nextIterChar;
+		for (int i = 0; i < expLen - 1; i++) {
+			iterChar = expression.charAt(i);
+			nextIterChar = expression.charAt(i + 1);
+			
+			// check whether all variable is a single char,
+			// the program doesn't support variables like "foo","bar".
+			if (varCharSet.indexOf(iterChar) > 0 && varCharSet.indexOf(nextIterChar) > 0) {
+				System.out.println(
+						"Error! Expression has invalid variables " + "(only support one-character variables)!");
+				return;
+			}
+			
+			// check whether expression has two concatenated operator such as
+			// "++","*+"
+			if (optrCharSet.indexOf(iterChar) > 0 && optrCharSet.indexOf(nextIterChar) > 0) {
+				System.out.println("Error! Expression has invalid operators.");
+				return;
+			}
 		}
-		if(position1 >= 0){
-			int position2 = express.indexOf("+");
-			String str5 = null;
-			String str1,str2;
-			while(position2 >= 0){
-				int a = express.length();
-				str1 = express.substring( 0, position2 );
-				express = express.substring( position2 + 1,a);
-				int position3 = str1.indexOf(num1);
-				if(position3 >= 0);{
-					int num3 = str1.length();
-					int ad = 0;
-					for(int j = 0; j < num3;j++){
-						if(num1 == str1.charAt(j)){
-							ad = ad + 1;
+		System.out.printf("%s", expression);
+	}
+
+	/**
+	 * Simplify the expression.
+	 * 
+	 * @param line
+	 * @param expression
+	 */
+	public static void simplify(final String line, String expression) {
+		String stringFlag = null;
+		
+		// the index of the space after the first parameter,
+		// like the # position:"!simplify x=4#y=3"
+		int j = 13;
+		final int lineLen = line.length();
+		final char[] lineCharArray = line.toCharArray();
+		
+		// check whether parameter format is valid ,for example "x=8 y=9 u=2"
+		// program doesn't support other parameter format, like "x = 9 y = 5".
+		while (j < lineLen - 1) { // ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Ï·ï¿½?
+			final String str2 = String.valueOf(lineCharArray[j]);
+			final int b = space.indexOf(str2);
+			if (b == 0) {
+				j = j + 4;// move to next space after parameter.
+			} else {
+				System.out.println("Error,no variable");
+				// ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½Error,no
+				// variable
+				stringFlag = "Error";
+				break;
+			}
+		}
+
+		if (stringFlag == null) {
+			String simplifyNew = line.replaceAll(" ", "");
+			final int simplifyNewLen = simplifyNew.length(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÊ½ï¿½ï¿½ï¿½é³¤ï¿½ï¿½??
+			final int expressionLen = expression.length(); // ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½é³¤ï¿½ï¿½??
+			
+			// simplifyNew now is like "x=3y=4" pattern;
+			simplifyNew = simplifyNew.substring(9, simplifyNewLen);
+			final char[] simCharArray = simplifyNew.toCharArray(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÊ½ï¿½ï¿½ï¿½ï¿½??
+			final char[] expCharArray = expression.toCharArray(); // ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½??
+			int i;
+			int l = 0;
+
+			if (simCharArray == null) { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?!simplify,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?//if no
+										// parameters
+				System.out.println(expression);
+			} else {
+				while (l < simplifyNewLen - 10) { // ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¬ï¿½ï¿½ï¿½æ»»
+					for (i = 0; i < expressionLen; i++) {
+						final String str4 = String.valueOf(simCharArray[l]);
+						final String str1 = String.valueOf(expCharArray[i]);
+						final int a = str4.indexOf(str1);
+						if (a == 0) {
+							final String expressNew = expression.replace(simCharArray[l], simCharArray[l + 2]);
+							expression = expressNew;
 						}
 					}
-					String a1[] = str1.split("%c",num1);
-					a1[0] = a1[0] + "*"+ad;
-					for(int x = 0;x < ad;x++){
-						a1[0] = a1[0] + "*"+ num1;
-					}
-					StringBuffer sb = new StringBuffer();
-					for(int i = 0; i < a1.length; i++){
-					 sb. append(a1[i]);
-					}
-					String s = sb.toString();
-					str5 = str5 + s;
+					l = l + 3; // change index l to next parameter.
 				}
-				System.out.printf("%s",str5);
+				System.out.println(expression); // ï¿½ï¿½ï¿½ï¿½æ»»ï¿½ï¿½Öµï¿½ï¿½Ä¶ï¿½ï¿½ï¿½Ê½
 			}
+		}
+	}
+
+	/**
+	 * only support "!d/dx",there can't be spaces between "x" and "d".
+	 * 
+	 * @param line
+	 * @param expression
+	 */
+	public static void derivative(final String line, String expression) {
+		char derivativeVar;
+		derivativeVar = line.charAt(4); // only support one-character derivative
+										// variable.
+		int derVarPos = expression.indexOf(derivativeVar);
+		if (derVarPos == -1) {
+			System.out.println("Error,no variable");
+		}
+		if (derVarPos >= 0) {
+			int plusOptrPos = expression.indexOf('+');
+			String derivativeExp = new String();
+			String processingItem;
+			while (plusOptrPos >= 0 || !expression.isEmpty()) {
+				final int expressionLen = expression.length();
+
+				if (plusOptrPos >= 0) {
+					processingItem = expression.substring(0, plusOptrPos);
+					expression = expression.substring(plusOptrPos + 1, expressionLen);
+				} else {
+					processingItem = expression;
+					expression = "";
+				}
+
+				// remove the first item from the expression.
+				final int derVarPosInItem = processingItem.indexOf(derivativeVar);
+				if (derVarPosInItem >= 0) {
+					final int processingItemLen = processingItem.length();
+					int derVarCount = 0;
+					for (int j = 0; j < processingItemLen; j++) {
+						if (derivativeVar == processingItem.charAt(j)) {
+							derVarCount = derVarCount + 1;
+						}
+					}
+					
+					// line commented below may be wrong
+					// String[] a1 = processingItem.split("%c", derivativeVar);
+					String[] proItemSplited = processingItem.split(String.valueOf(derivativeVar));
+					String s;
+
+					if (proItemSplited.length == 0) {
+						s = "1";
+					} else {
+						proItemSplited[0] = proItemSplited[0] + "*" + derVarCount;
+						
+						// add the derVar removed by the String.split method,
+						// but one less because
+						// the derivative operation.
+						for (int x = 0; x < derVarCount - 1; x++) {
+							proItemSplited[0] = proItemSplited[0] + "*" + derivativeVar;
+						}
+						final StringBuffer sb = new StringBuffer();
+						for (int i = 0; i < proItemSplited.length; i++) {
+							sb.append(proItemSplited[i]);
+						}
+						s = sb.toString();
+					}
+
+					if (plusOptrPos >= 0) {
+						derivativeExp = derivativeExp + s + "+";
+					} else {
+						derivativeExp = derivativeExp + s;
+					}
+					plusOptrPos = expression.indexOf('+'); // NOPMD by lostork
+															// on 16-10-15
+															// ä¸‹åˆ10:28
+
+				} else {
+
+					if (plusOptrPos >= 0) {
+						derivativeExp += processingItem + "+";
+					} else {
+						derivativeExp += processingItem;
+					}
+				}
+			}
+
+			System.out.println(derivativeExp);
 		}
 	}
 
